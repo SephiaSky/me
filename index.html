@@ -301,7 +301,7 @@
           grecaptcha.ready(function() {
               grecaptcha.execute(SITE_KEY, {action: 'submit'}).then(function(token) {
                   
-                  fetch('/api/register-wallet', {
+                  fetch('https://sephiasky.com/api/register-wallet', {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({ wallet: address, captchaToken: token })
@@ -342,7 +342,7 @@
 
           if (activeEventSource) activeEventSource.close();
 
-          activeEventSource = new EventSource(`/api/monitor-payment?wallet=${wallet}`);
+          activeEventSource = new EventSource(`https://sephiasky.com/api/monitor-payment?wallet=${wallet}`);
 
           activeEventSource.onmessage = function(event) {
               const data = JSON.parse(event.data);
@@ -391,3 +391,4 @@
         </div>
       </div>
 </html>
+
