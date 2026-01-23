@@ -7,9 +7,8 @@
     <meta name="description" content="Embark on epic gaming adventures with our blog! From game reviews to insider tips, stay tuned for exciting content, including future games I am making">
     <title>Sephia Sky | Gameplay, Expert Tips, Reviews and Strategies</title>
     <link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico">
-
- <link href="js/bootstrap.min.css" rel="stylesheet">
-
+    <link href="js/bootstrap.min.css" rel="stylesheet">
+    <script src="https://www.google.com/recaptcha/api.js?render=6LfPalMsAAAAALk-BB78KiLwIuy0Loy94WZJhHgy"></script>
     <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -122,10 +121,17 @@
         </a>
         </li>
       </ul>
-      <form class="d-flex" role="search">
+      <!--- 
+       <form class="d-flex" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
+      </form>     
+      -->
+      <div class="d-flex ms-auto">
+          <button id="supportBtn" class="btn btn-warning fw-bold" type="button">
+              Support This Page
+          </button>
+      </div>
     </div>
   </div>
 </nav>
@@ -257,4 +263,131 @@
   </p>
 </footer>
     </body>
+    <script>
+      let activeEventSource = null; 
+
+      document.getElementById('supportBtn').addEventListener('click', function() {
+          // Reset the UI every time the modal opens
+          const input = document.getElementById('walletAddress');
+          const btn = document.getElementById('sendBtn');
+          const msgBox = document.getElementById('responseMessage');
+
+          input.value = "";             // Clear text
+          input.readOnly = false;       // Make editable
+          input.style.backgroundColor = "white"; // White background
+          btn.style.display = "inline-block"; // Show button
+          msgBox.classList.add("d-none");     // Hide messages
+
+          const myModal = new bootstrap.Modal(document.getElementById('cryptoModal'));
+          myModal.show();
+      });
+
+      function submitWallet() {
+          const input = document.getElementById('walletAddress');
+          const btn = document.getElementById('sendBtn');
+          const msgBox = document.getElementById('responseMessage');
+          const address = input.value;
+          const SITE_KEY = '6LfPalMsAAAAALk-BB78KiLwIuy0Loy94WZJhHgy'; 
+
+          if(address.length < 5) {
+              alert("Please enter a valid address.");
+              return;
+          }
+
+          msgBox.className = "alert alert-info";
+          msgBox.innerHTML = "Verifying... <div class='spinner-border spinner-border-sm' role='status'></div>";
+          msgBox.classList.remove("d-none");
+
+          grecaptcha.ready(function() {
+              grecaptcha.execute(SITE_KEY, {action: 'submit'}).then(function(token) {
+                  
+                  fetch('/api/register-wallet', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ wallet: address, captchaToken: token })
+                  })
+                  .then(response => response.json())
+                  .then(data => {
+                      if(data.success) {
+                          // --- HERE IS THE FIX ---
+                          
+                          // 1. Lock the Input (Gray it out)
+                          input.readOnly = true;
+                          input.style.backgroundColor = "#e9ecef"; 
+                          
+                          // 2. Remove the Button
+                          btn.style.display = "none"; 
+
+                          // 3. Start Monitoring
+                          startMonitoring(address);
+
+                      } else {
+                          msgBox.className = "alert alert-danger";
+                          msgBox.innerText = "Verification failed: " + data.message;
+                      }
+                  })
+                  .catch(err => {
+                      msgBox.className = "alert alert-warning";
+                      msgBox.innerText = "Connection error.";
+                  });
+              });
+          });
+      }
+
+      function startMonitoring(wallet) {
+          const msgBox = document.getElementById('responseMessage');
+          
+          msgBox.className = "alert alert-primary";
+          msgBox.innerHTML = "<strong>Wallet Registered!</strong><br>You may add BBY tokens (5 min timeout)... <div class='spinner-border spinner-border-sm' role='status'></div>";
+
+          if (activeEventSource) activeEventSource.close();
+
+          activeEventSource = new EventSource(`/api/monitor-payment?wallet=${wallet}`);
+
+          activeEventSource.onmessage = function(event) {
+              const data = JSON.parse(event.data);
+
+              if (data.status === 'success') {
+                  msgBox.className = "alert alert-success";
+                  msgBox.innerHTML = "<strong>Awesome!</strong><br>Thank you for your support! 🚀";
+                  activeEventSource.close();
+              } 
+              else if (data.status === 'timeout') {
+                  msgBox.className = "alert alert-secondary";
+                  msgBox.innerText = "Monitoring stopped. No transaction detected.";
+                  activeEventSource.close();
+              }
+          };
+          
+          activeEventSource.onerror = function() {
+              activeEventSource.close();
+          };
+      }
+    </script>
+      <div class="modal fade" id="cryptoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Hold more BBY jettons</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Enter your <strong>TON</strong> wallet address below. We will check it as you add more Buboy tokens.</p>
+              
+              <form id="walletForm">
+                <div class="mb-3">
+                  <label for="walletAddress" class="form-label">Your TON Wallet Address</label>
+                  <input type="text" class="form-control" id="walletAddress" placeholder="EQC..." required>
+                </div>
+                
+                <div id="responseMessage" class="alert d-none"></div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="sendBtn" onclick="submitWallet()">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
 </html>
