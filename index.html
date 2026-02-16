@@ -139,10 +139,15 @@
 <main class="container">
 
   <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary mt-4">
-    <div class="col-lg-6 px-0">
-      <h1 class="display-4 fst-italic">My Game Developer Story As A PC Game YouTuber</h1>
-      <p class="lead my-3">Let me share with you my journey of becoming a game developer and PC gamer. You might be wondering why I decided to make games. I think it would be nice to play my own game and have everyone join.</p>
-      <p class="lead mb-0"><a href="#" class="text-body-emphasis fw-bold">Coming soon...</a></p>
+  <div id="heroSection" class="p-4 p-md-5 mb-4 rounded text-white bg-dark mt-4 position-relative" 
+     style="background-image: url('assets/banner1.png'); background-size: cover; background-position: center; transition: background-image 1s ease-in-out;">
+    
+    <div class="position-absolute top-0 start-0 w-100 h-100 rounded" style="background: rgba(0,0,0,0.6); z-index: 0;"></div>
+
+    <div class="col-lg-6 px-0 position-relative" style="z-index: 1;">
+      <h1 id="heroTitle" class="display-4 fst-italic">Secrets of Aletheia</h1>
+      <p id="heroDesc" class="lead my-3">Enter a dark fantasy world where death is only the beginning. Play as a fallen warrior lich clad in ebony armor.</p>
+      <p class="lead mb-0"><a id="heroLink" href="#" class="text-white fw-bold">Join the Waitlist...</a></p>
     </div>
   </div>
 
@@ -152,7 +157,33 @@
         Pages from the Lore Book
       </h3>
 
-          <!----  starts here  ---->  
+          <!----  starts here  ----> 
+      <article class="blog-post">
+          <h2 class="display-5 link-body-emphasis mb-1" id="Kickstarter-Vs-Token">Why I Skipped Kickstarter: The Future is Tokenized</h2>
+          <p class="blog-post-meta">February 16, 2026 by Sephia Sky</p>
+  
+          <p>Let's be real for a second: Kickstarter has broken the hearts of too many PC gamers. We have all been there—hyping up a project, dropping $50 or $100 on a "Super Early Bird" tier, and then... waiting. And waiting. Delays happen, scope creep happens, and sometimes, the game just vanishes into the void. The traditional crowdfunding model feels outdated for the speed of modern indie development.</p>
+          
+          <p>That is why for my upcoming titles, <strong>Secrets of Aletheia</strong> and my new <strong>2D Strategy RPG</strong>, I decided to take a different path. I didn't want a donation box; I wanted a community economy.</p>
+          
+          <br>
+          
+          <h3>Enter the $BBY Token</h3>
+          <p>Instead of asking for pledges on a promise, we are building a community. By supporting the project via our <strong>Buboy ($BBY)</strong> token on the TON network, you aren't just a "backer"—you are an active participant in the game's economy before it even launches. This allows us to:</p>
+          <ul>
+            <li><strong>Fund Development Directly: </strong> Your support flows straight into creating art assets, game updates, maintaining servers, and fueling those late-night coding sessions.</li>
+            <li><strong>Retain Control:</strong> Unlike a donation that is gone forever, holding $BBY is a testament to your trust in us. You maintain full custody and control of your support at all times.</li>
+            <li><strong>Grow Together:</strong> Token growth is community growth. We are building a tribe, not a customer base.</li>
+          </ul>
+  
+          <blockquote>
+            <p>"A Tokenized Partnership where the community is the foundation of the project."</p>
+          </blockquote>
+  
+          <p>Both <em>Secrets of Aletheia</em> (a 2D JRPG-style adventure) and our new tactical RPG with MMO elements and blockchain are currently in active development. If you are tired of empty promises and want to help build a game where your voice and presence actually matter, check the support button above.</p>
+          <hr>
+          <p>Let's build something legendary together.</p>
+      </article>
       <article class="blog-post">
         <h2 class="display-5 link-body-emphasis mb-1" id="Black-Desert-Online-Arena-Of-Solare">Black Desert Online’s Arena of Solare: The Future of PvP Gaming?</h2>
         <p class="blog-post-meta">January 21, 2024 by Sephia Sky</p>
@@ -190,8 +221,13 @@
       <div class="position-sticky" style="top: 2rem;">
         <div class="p-4 mb-3 bg-body-tertiary rounded">
           <h4 class="fst-italic">About</h4>
-          <p class="mb-0">As an indie game developer and avid gamer, I’ve spent countless hours immersed in pixelated realms. From retro classics to cutting-edge titles, I believe that every game has a story to tell. Join me on this adventure as we unravel gaming mysteries and celebrate victories together.</p>
-        </div>
+            <p class="mb-0">
+                I am an indie developer and PC gamer on a mission to redefine ownership in gaming. 
+                Currently building two major titles: <strong>Secrets of Aletheia</strong> (a dark fantasy RPG) 
+                and an <strong>untitled 2D Strategy RPG</strong> integrated with Web3 technology. 
+                Join me as we build the future of gaming, one pixel at a time.
+            </p>
+         </div>
 
         <div>
           <h4 class="fst-italic">Youtube Post</h4>
@@ -263,6 +299,64 @@
   </p>
 </footer>
     </body>
+        <script>
+  // 1. The Data: Define your slides here
+  const heroSlides = [
+    {
+      image: "assets/banner1.png", 
+      title: "Secrets of Aletheia",
+      desc: "Enter a dark fantasy world where death is only the beginning. Play as a fallen warrior lich clad in ebony armor.",
+      linkText: "Available in Early Access...",
+      url: "https://sephiaskygaming.itch.io/" 
+    },
+    {
+      image: "assets/banner2.png",
+      title: "Project: Web3 Tactics",
+      desc: "A new era of 2D Strategy RPG. Build your army, support the ecosystem, and own your victories on the blockchain.",
+      linkText: "Learn About $BBY...",
+      url: "#Kickstarter-Vs-Token"
+    }
+  ];
+
+  let currentSlide = 0;
+  
+  // 2. The Logic: Function to change the content
+  function rotateHero() {
+    currentSlide = (currentSlide + 1) % heroSlides.length;
+    const slide = heroSlides[currentSlide];
+
+    const section = document.getElementById('heroSection');
+    const title = document.getElementById('heroTitle');
+    const desc = document.getElementById('heroDesc');
+    const link = document.getElementById('heroLink');
+
+    // Fade Out
+    title.style.opacity = 0;
+    desc.style.opacity = 0;
+    link.style.opacity = 0; // Fade the link too!
+    
+    setTimeout(() => {
+      // Update Content
+      section.style.backgroundImage = `url('${slide.image}')`;
+      title.innerText = slide.title;
+      desc.innerText = slide.desc;
+      link.innerText = slide.linkText;
+      link.href = slide.url; // <--- THIS IS THE FIX
+      
+      // Fade In
+      title.style.opacity = 1;
+      desc.style.opacity = 1;
+      link.style.opacity = 1;
+    }, 500);
+  }
+
+  // 3. Start the Engine: Change every 6 seconds
+  // Add CSS transition for opacity to make text fade smooth
+  document.getElementById('heroTitle').style.transition = "opacity 0.5s";
+  document.getElementById('heroDesc').style.transition = "opacity 0.5s";
+  
+  setInterval(rotateHero, 6000); 
+</script>
     <script>
       let activeEventSource = null; 
 
@@ -391,5 +485,6 @@
         </div>
       </div>
 </html>
+
 
 
